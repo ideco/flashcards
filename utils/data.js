@@ -28,11 +28,21 @@ export const DEFAULT_DATA = {
 };
 
 export const getDecks = () => AsyncStorage.getItem(STORAGE_KEY, (data) => {
+    AsyncStorage.clear();
     let parsedData = JSON.parse(data);
     if (parsedData !== null) {
-        return parsedData;
+        return new Promise(() => JSON.parse(parsedData));
     }
     // Insert default data and return promise
     AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DATA))
         .then(() => AsyncStorage.getItem(STORAGE_KEY, JSON.parse));
 });
+
+export const getDeck = (id) => {
+    return (getDecks().then((decks) => {
+        if (typeof decks === "string") {
+            return JSON.parse(decks)[id]
+        }
+        return decks[id];
+    }));
+};

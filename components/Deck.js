@@ -1,11 +1,32 @@
 import React, {Component} from 'react';
 import {Text} from "react-native";
 import {Button, Card} from "react-native-elements";
+import {getDeck} from "../utils/data";
 
 class Deck extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {deck: null}
+    }
+
+    componentDidMount() {
+        const {title} = this.props.navigation.state.params;
+        getDeck(title).then((deck) => {
+            this.setState({
+                deck
+            })
+        })
+    }
+
     render() {
+        if (this.state.deck === null) {
+            return (
+                <Text>Loading</Text>
+            )
+        }
         const {navigation} = this.props;
-        const {title, size} = this.props.navigation.state.params;
+        const {title, size} = this.state.deck;
         return (
             <Card
                 title={title}>
