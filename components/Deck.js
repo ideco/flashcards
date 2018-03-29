@@ -4,6 +4,7 @@ import {Button, Card} from "react-native-elements";
 
 class Deck extends Component {
     render() {
+        const {navigation} = this.props;
         const {title, size} = this.props.navigation.state.params;
         return (
             <Card
@@ -15,6 +16,7 @@ class Deck extends Component {
                     icon={{name: 'add'}}
                     backgroundColor='#03A9F4'
                     buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 10}}
+                    onPress={() => navigation.navigate('AddQuestion', title)}
                     title='Add Questions'/>
                 <Button
                     icon={{name: 'question-answer'}}
