@@ -1,15 +1,9 @@
 import React from "react";
-import {FlatList, Text, View} from 'react-native';
+import {FlatList, Text, TouchableOpacity, View} from 'react-native';
 import {getDecks} from "../utils/data";
 import {Card} from "react-native-elements";
 
-const renderCard = ({item}) => (
-    <Card
-        key={item.title}
-        title={item.title}>
-        <Text style={{textAlign: 'center'}}>{`${item.size} cards`}</Text>
-    </Card>
-);
+
 
 export default class DeckList extends React.Component {
 
@@ -26,8 +20,19 @@ export default class DeckList extends React.Component {
         })
     }
 
+    renderCard = ({item}, navigation) => (
+        <TouchableOpacity onPress={() => navigation.navigate('Deck', item)}>
+            <Card
+                key={item.title}
+                title={item.title}>
+                <Text style={{textAlign: 'center'}}>{`${item.size} cards`}</Text>
+            </Card>
+        </TouchableOpacity>
+    );
+
     render() {
         const {decks} = this.state;
+        const {navigation} = this.props;
         if (decks === null) {
             return (
                 <Text>Loading</Text>
@@ -38,10 +43,10 @@ export default class DeckList extends React.Component {
                 <FlatList
                     data={Object.values(decks).map((deck => ({
                         key: deck.title,
-                        title: deck.title,
-                        size: deck.questions.length
+                        size: deck.questions.length,
+                        ...deck
                     })))}
-                    renderItem={renderCard}
+                    renderItem={item => this.renderCard(item, navigation)}
                 />
             </View>
         );
