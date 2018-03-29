@@ -1,4 +1,8 @@
-const data = {
+import {AsyncStorage} from 'react-native';
+
+const STORAGE_KEY = '@flashcards:key';
+
+export const DEFAULT_DATA = {
     React: {
         title: 'React',
         questions: [
@@ -23,7 +27,12 @@ const data = {
     }
 };
 
-export const getDeckInfos = () => Object.values(data).map((deck) => ({
-    title: deck['title'],
-    size: Object.keys(deck['questions']).length
-}));
+export const getDecks = () => AsyncStorage.getItem(STORAGE_KEY, (data) => {
+    let parsedData = JSON.parse(data);
+    if (parsedData !== null) {
+        return parsedData;
+    }
+    // Insert default data and return promise
+    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DATA))
+        .then(() => AsyncStorage.getItem(STORAGE_KEY, JSON.parse));
+});
