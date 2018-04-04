@@ -6,10 +6,11 @@ class AddDeck extends Component {
 
     constructor(props) {
         super(props);
-        const {submitDeck} = props.navigation.state.params;
+        const {submitDeck, refresh} = props.navigation.state.params;
         this.state = {
             title: '',
-            submitDeck
+            submitDeck,
+            refresh
         };
         this.setTitle = this.setTitle.bind(this);
     }
@@ -23,7 +24,7 @@ class AddDeck extends Component {
 
 
     render() {
-        const {title, submitDeck} = this.state;
+        const {title, submitDeck, refresh} = this.state;
         const titleEmpty = !title || title.length === 0;
         const {navigation} = this.props;
         return (
@@ -39,7 +40,10 @@ class AddDeck extends Component {
                     buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginTop: 20}}
                     onPress={() => {
                         submitDeck(title);
-                        navigation.navigate('DeckList')
+                        navigation.navigate('Deck', {
+                            title,
+                            refresh
+                        })
                     }}
                     title='Create'/>
             </View>

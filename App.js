@@ -20,6 +20,18 @@ const Stack = StackNavigator({
     }
 });
 
+const prevGetStateForAction = Stack.router.getStateForAction;
+
+Stack.router.getStateForAction = (action, state) => {
+    // Do not allow to go back to AddQuestion or AddDeck
+    if (action.type === 'Navigation/BACK' && state) {
+        const newRoutes = state.routes.filter(r => (r.routeName !== 'AddQuestion' && r.routeName !== 'AddDeck'));
+        const newIndex = newRoutes.length - 1;
+        return prevGetStateForAction(action, {index: newIndex, routes: newRoutes});
+    }
+    return prevGetStateForAction(action, state);
+};
+
 export default class App extends React.Component {
     render() {
         return (

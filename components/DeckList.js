@@ -1,6 +1,6 @@
 import React from "react";
 import {FlatList, Text, TouchableOpacity, View} from 'react-native';
-import {addDeck, addQuestion, getDecks} from "../utils/data";
+import {addDeck, getDecks} from "../utils/data";
 import {Card, Button} from "react-native-elements";
 
 
@@ -10,17 +10,21 @@ export default class DeckList extends React.Component {
         super(props);
         this.state = {decks: null};
         this.submitDeck = this.submitDeck.bind(this);
-        this.submitQuestion = this.submitQuestion.bind(this);
+        this.refresh = this.refresh.bind(this);
     }
 
     componentDidMount() {
+        this.refresh();
+    }
+
+
+    refresh() {
         getDecks().then((decks) => {
             this.setState({
                 decks: decks
             })
         })
     }
-
 
     submitDeck(title) {
         addDeck(title).then((decks) => {
@@ -30,18 +34,10 @@ export default class DeckList extends React.Component {
         })
     }
 
-    submitQuestion(deck, question, answer) {
-        addQuestion(deck, question, answer).then((decks) => {
-            this.setState({
-                decks: decks
-            })
-        })
-    }
-
-    renderCard = ({item}, navigation, submitQuestion) => (
+    renderCard = ({item}, navigation, refresh) => (
         <TouchableOpacity onPress={() => navigation.navigate('Deck', {
-            item,
-            submitQuestion: (question, answer) => submitQuestion(item.title, question, answer)
+            title: item.title,
+            refresh
         })}>
             <Card
                 key={item.title}
@@ -54,7 +50,7 @@ export default class DeckList extends React.Component {
     render() {
         const {decks} = this.state;
         const submitDeck = this.submitDeck;
-        const submitQuestion = this.submitQuestion;
+        const refresh = this.refresh;
         const {navigation} = this.props;
         return (
             <View>
@@ -65,7 +61,7 @@ export default class DeckList extends React.Component {
                             size: deck.questions.length,
                             ...deck
                         })))}
-                        renderItem={item => this.renderCard(item, navigation, submitQuestion)}
+                        renderItem={item => this.renderCard(item, navigation, refresh)}
                     />) : (
                     <Text>No cards</Text>
                 )
@@ -74,7 +70,7 @@ export default class DeckList extends React.Component {
                     icon={{name: 'add'}}
                     backgroundColor='#03A9F4'
                     buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginTop: 20}}
-                    onPress={() => navigation.navigate('AddDeck', {submitDeck})}
+                    onPress={() => navigation.navigate('AddDeck', {refresh, submitDeck})}
                     title='Create New Deck'/>
             </View>
         );

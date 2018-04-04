@@ -22,5 +22,9 @@ export const addQuestion = (deck, question, answer) => (getDecks()
                 }])
             }
         })))
-        .then(getDecks)
+        .then(() => getDeck(deck))
 );
+
+export const getDeck = (id) => {
+    return getDecks().then(decks => decks[id]);
+};

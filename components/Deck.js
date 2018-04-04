@@ -1,28 +1,41 @@
 import React, {Component} from 'react';
 import {Text} from "react-native";
 import {Button, Card} from "react-native-elements";
+import {addQuestion, getDeck} from "../utils/data";
 
 class Deck extends Component {
 
     constructor(props) {
         super(props);
-        const {item, submitQuestion} = props.navigation.state.params;
+        const {title, refresh} = props.navigation.state.params;
         this.state = {
-            title: item.title,
-            size: item.questions.length,
-            submitQuestion
+            title: title,
+            size: -1,
+            refreshParent: refresh
         };
         this.submitQuestion = this.submitQuestion.bind(this);
     }
 
+    componentDidMount() {
+        const {title} = this.props.navigation.state.params;
+        getDeck(title).then(deck => {
+            this.setState((state) => ({
+                ...state,
+                title: deck.title,
+                size: deck.questions.length
+            }))
+        })
+    }
+
 
     submitQuestion(question, answer) {
-        this.state.submitQuestion(question, answer);
-        this.setState((state) => ({
-            ...state,
-            size: state.size + 1
-        }));
-
+        addQuestion(this.state.title, question, answer)
+            .then(deck => this.setState((state) => ({
+                    ...state,
+                    size: deck.questions.length
+                }))
+            )
+            .then(this.state.refreshParent);
     }
 
     render() {
