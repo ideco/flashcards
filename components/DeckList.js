@@ -1,6 +1,6 @@
 import React from "react";
 import {FlatList, Text, TouchableOpacity, View} from 'react-native';
-import {addDeck, getDecks} from "../utils/data";
+import {addDeck, addQuestion, getDecks} from "../utils/data";
 import {Card, Button} from "react-native-elements";
 
 
@@ -10,6 +10,7 @@ export default class DeckList extends React.Component {
         super(props);
         this.state = {decks: null};
         this.submitDeck = this.submitDeck.bind(this);
+        this.submitQuestion = this.submitQuestion.bind(this);
     }
 
     componentDidMount() {
@@ -29,8 +30,19 @@ export default class DeckList extends React.Component {
         })
     }
 
-    renderCard = ({item}, navigation) => (
-        <TouchableOpacity onPress={() => navigation.navigate('Deck', item)}>
+    submitQuestion(deck, question, answer) {
+        addQuestion(deck, question, answer).then((decks) => {
+            this.setState({
+                decks: decks
+            })
+        })
+    }
+
+    renderCard = ({item}, navigation, submitQuestion) => (
+        <TouchableOpacity onPress={() => navigation.navigate('Deck', {
+            item,
+            submitQuestion: (question, answer) => submitQuestion(item.title, question, answer)
+        })}>
             <Card
                 key={item.title}
                 title={item.title}>
@@ -42,6 +54,7 @@ export default class DeckList extends React.Component {
     render() {
         const {decks} = this.state;
         const submitDeck = this.submitDeck;
+        const submitQuestion = this.submitQuestion;
         const {navigation} = this.props;
         return (
             <View>
@@ -52,7 +65,7 @@ export default class DeckList extends React.Component {
                             size: deck.questions.length,
                             ...deck
                         })))}
-                        renderItem={item => this.renderCard(item, navigation)}
+                        renderItem={item => this.renderCard(item, navigation, submitQuestion)}
                     />) : (
                     <Text>No cards</Text>
                 )

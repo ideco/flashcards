@@ -1,33 +1,34 @@
 import React, {Component} from 'react';
 import {Text} from "react-native";
 import {Button, Card} from "react-native-elements";
-import {getDeck} from "../utils/data";
 
 class Deck extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {deck: null}
+        const {item, submitQuestion} = props.navigation.state.params;
+        this.state = {
+            title: item.title,
+            size: item.questions.length,
+            submitQuestion
+        };
+        this.submitQuestion = this.submitQuestion.bind(this);
     }
 
-    componentDidMount() {
-        const {title} = this.props.navigation.state.params;
-        getDeck(title).then((deck) => {
-            this.setState({
-                deck
-            })
-        })
+
+    submitQuestion(question, answer) {
+        this.state.submitQuestion(question, answer);
+        this.setState((state) => ({
+            ...state,
+            size: state.size + 1
+        }));
+
     }
 
     render() {
-        if (this.state.deck === null) {
-            return (
-                <Text>Loading</Text>
-            )
-        }
         const {navigation} = this.props;
-        const {title, questions} = this.state.deck;
-        const size = questions.length;
+        const {title, size} = this.state;
+        const submitQuestion = this.submitQuestion;
         return (
             <Card
                 title={title}>
@@ -38,7 +39,9 @@ class Deck extends Component {
                     icon={{name: 'add'}}
                     backgroundColor='#03A9F4'
                     buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 10}}
-                    onPress={() => navigation.navigate('AddQuestion', title)}
+                    onPress={() => navigation.navigate('AddQuestion', {
+                        submitQuestion
+                    })}
                     title='Add Questions'/>
                 <Button
                     icon={{name: 'question-answer'}}
