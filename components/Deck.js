@@ -26,7 +26,8 @@ class Deck extends Component {
             )
         }
         const {navigation} = this.props;
-        const {title, size} = this.state.deck;
+        const {title, questions} = this.state.deck;
+        const size = questions.length;
         return (
             <Card
                 title={title}>
