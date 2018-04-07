@@ -4,6 +4,7 @@ import {StackNavigator} from "react-navigation";
 import Deck from "./components/Deck";
 import AddQuestion from "./components/AddQuestion";
 import AddDeck from "./components/AddDeck";
+import Quiz from "./components/Quiz";
 
 const Stack = StackNavigator({
     DeckList: {
@@ -17,6 +18,9 @@ const Stack = StackNavigator({
     },
     AddQuestion: {
         screen: AddQuestion
+    },
+    Quiz: {
+        screen: Quiz
     }
 });
 

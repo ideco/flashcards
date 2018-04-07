@@ -9,11 +9,11 @@ class Deck extends Component {
         super(props);
         const {title, refresh} = props.navigation.state.params;
         this.state = {
-            title: title,
-            size: -1,
+            title,
+            size: 0,
+            questions: [],
             refreshParent: refresh
         };
-        this.submitQuestion = this.submitQuestion.bind(this);
     }
 
     componentDidMount() {
@@ -22,26 +22,43 @@ class Deck extends Component {
             this.setState((state) => ({
                 ...state,
                 title: deck.title,
+                questions: deck.questions,
                 size: deck.questions.length
             }))
         })
     }
 
-
     submitQuestion(question, answer) {
         addQuestion(this.state.title, question, answer)
             .then(deck => this.setState((state) => ({
                     ...state,
+                questions: deck.questions,
                     size: deck.questions.length
                 }))
             )
             .then(this.state.refreshParent);
     }
 
+    onAddQuestionPress = () => {
+        const {navigate} = this.props.navigation;
+        const submitQuestion = this.submitQuestion.bind(this);
+        navigate('AddQuestion', {
+            submitQuestion
+        });
+    };
+
+    onStartQuizPress = () => {
+        const {navigate} = this.props.navigation;
+        const {title, questions} = this.state;
+        navigate('Quiz', {
+            title,
+            questions
+        })
+    };
+
     render() {
-        const {navigation} = this.props;
         const {title, size} = this.state;
-        const submitQuestion = this.submitQuestion;
+        const {onAddQuestionPress, onStartQuizPress} = this;
         return (
             <Card
                 title={title}>
@@ -52,14 +69,13 @@ class Deck extends Component {
                     icon={{name: 'add'}}
                     backgroundColor='#03A9F4'
                     buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 10}}
-                    onPress={() => navigation.navigate('AddQuestion', {
-                        submitQuestion
-                    })}
+                    onPress={onAddQuestionPress}
                     title='Add Questions'/>
                 <Button
                     icon={{name: 'question-answer'}}
                     backgroundColor='#03A9F4'
                     buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
+                    onPress={onStartQuizPress}
                     title='Start Quiz'/>
             </Card>
         );

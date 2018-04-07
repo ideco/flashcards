@@ -36,6 +36,7 @@ class AddDeck extends Component {
                     <Text>''</Text>}
                 <Button
                     icon={{name: 'add'}}
+                    disabled={titleEmpty}
                     backgroundColor='#03A9F4'
                     buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginTop: 20}}
                     onPress={() => {
