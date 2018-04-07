@@ -1,5 +1,5 @@
 import React from "react";
-import {FlatList, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, Text, TouchableOpacity} from 'react-native';
 import {addDeck, getDecks} from "../utils/data";
 import {Card, Button} from "react-native-elements";
 
@@ -8,7 +8,9 @@ export default class DeckList extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {decks: null};
+        this.state = {
+            decks: {}
+        };
         this.submitDeck = this.submitDeck.bind(this);
         this.refresh = this.refresh.bind(this);
     }
@@ -47,14 +49,17 @@ export default class DeckList extends React.Component {
     );
 
     renderAddButton = () => {
-        const {navigation} = this.props;
-        const submitDeck = this.submitDeck;
+        const {navigate} = this.props.navigation;
+        const {submitDeck, refresh} = this;
         return (
             <Button
                 icon={{name: 'add'}}
                 backgroundColor='#03A9F4'
                 buttonStyle={{marginTop: 20, marginBottom: 20}}
-                onPress={() => navigation.navigate('AddDeck', {refresh, submitDeck})}
+                onPress={() => navigate('AddDeck', {
+                    refresh,
+                    submitDeck
+                })}
                 title='Create New Deck'/>
 
         );
@@ -62,24 +67,19 @@ export default class DeckList extends React.Component {
 
     render() {
         const {decks} = this.state;
-        const refresh = this.refresh;
+        const deckArray = decks ? Object.values(decks) : [];
+        const {refresh, renderCard, renderAddButton} = this;
         const {navigation} = this.props;
         return (
-            <View>
-                {decks !== null ? (
-                    <FlatList
-                        data={Object.values(decks).map((deck => ({
-                            key: deck.title,
-                            size: deck.questions.length,
-                            ...deck
-                        })))}
-                        renderItem={item => this.renderCard(item, navigation, refresh)}
-                        ListFooterComponent={this.renderAddButton}
-                    />) : (
-                    null
-                )
-                }
-            </View>
+            <FlatList
+                data={deckArray.map((deck => ({
+                    key: deck.title,
+                    size: deck.questions.length,
+                    ...deck
+                })))}
+                renderItem={item => renderCard(item, navigation, refresh)}
+                ListFooterComponent={renderAddButton}
+            />
         );
     }
 }
