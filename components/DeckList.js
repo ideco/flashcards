@@ -1,5 +1,5 @@
 import React from "react";
-import {FlatList, Text, TouchableOpacity, View, AsyncStorage} from 'react-native';
+import {FlatList, Text, TouchableOpacity, View} from 'react-native';
 import {addDeck, getDecks} from "../utils/data";
 import {Card, Button} from "react-native-elements";
 
@@ -16,7 +16,6 @@ export default class DeckList extends React.Component {
     componentDidMount() {
         this.refresh();
     }
-
 
     refresh() {
         getDecks().then((decks) => {
@@ -47,9 +46,22 @@ export default class DeckList extends React.Component {
         </TouchableOpacity>
     );
 
+    renderAddButton = () => {
+        const {navigation} = this.props;
+        const submitDeck = this.submitDeck;
+        return (
+            <Button
+                icon={{name: 'add'}}
+                backgroundColor='#03A9F4'
+                buttonStyle={{marginTop: 20, marginBottom: 20}}
+                onPress={() => navigation.navigate('AddDeck', {refresh, submitDeck})}
+                title='Create New Deck'/>
+
+        );
+    };
+
     render() {
         const {decks} = this.state;
-        const submitDeck = this.submitDeck;
         const refresh = this.refresh;
         const {navigation} = this.props;
         return (
@@ -62,16 +74,11 @@ export default class DeckList extends React.Component {
                             ...deck
                         })))}
                         renderItem={item => this.renderCard(item, navigation, refresh)}
+                        ListFooterComponent={this.renderAddButton}
                     />) : (
                     null
                 )
                 }
-                <Button
-                    icon={{name: 'add'}}
-                    backgroundColor='#03A9F4'
-                    buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginTop: 20}}
-                    onPress={() => navigation.navigate('AddDeck', {refresh, submitDeck})}
-                    title='Create New Deck'/>
             </View>
         );
     }
