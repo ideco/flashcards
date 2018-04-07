@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {View, Text} from "react-native";
 import {Button, Card} from "react-native-elements";
+import {clearLocalNotification, setLocalNotification} from "../utils/notifications";
 
 class Quiz extends Component {
 
@@ -40,6 +41,7 @@ class Quiz extends Component {
         const nextIdx = this.state.index + 1;
         const newCorrect = this.state.correct + 1;
         if (nextIdx === this.state.questions.length) {
+            clearLocalNotification().then(setLocalNotification);
             this.setState((state) => ({
                 ...state,
                 correct: newCorrect,
@@ -57,6 +59,7 @@ class Quiz extends Component {
     onWrongAnswerPress = () => {
         const nextIdx = this.state.index + 1;
         if (nextIdx === this.state.questions.length) {
+            clearLocalNotification().then(setLocalNotification);
             this.setState((state) => ({
                 ...state,
                 showResult: true

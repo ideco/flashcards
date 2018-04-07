@@ -1,5 +1,5 @@
 import React from "react";
-import {FlatList, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, Text, TouchableOpacity, View, AsyncStorage} from 'react-native';
 import {addDeck, getDecks} from "../utils/data";
 import {Card, Button} from "react-native-elements";
 
@@ -63,7 +63,7 @@ export default class DeckList extends React.Component {
                         })))}
                         renderItem={item => this.renderCard(item, navigation, refresh)}
                     />) : (
-                    <Text>No cards</Text>
+                    null
                 )
                 }
                 <Button

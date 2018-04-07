@@ -5,6 +5,7 @@ import Deck from "./components/Deck";
 import AddQuestion from "./components/AddQuestion";
 import AddDeck from "./components/AddDeck";
 import Quiz from "./components/Quiz";
+import {setLocalNotification} from "./utils/notifications";
 
 const Stack = StackNavigator({
     DeckList: {
@@ -37,6 +38,11 @@ Stack.router.getStateForAction = (action, state) => {
 };
 
 export default class App extends React.Component {
+
+    componentDidMount() {
+        setLocalNotification();
+    }
+
     render() {
         return (
             <Stack/>
